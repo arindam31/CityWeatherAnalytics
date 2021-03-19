@@ -39,6 +39,7 @@ class City(Base):
     country = relationship(Country)
     lat = Column(Numeric(9, 7))
     lon = Column(Numeric(9, 7))
+    altitude = Column(Integer, default=0)
 
     def __repr__(self):
         return f'{self.name}'
