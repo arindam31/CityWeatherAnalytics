@@ -51,6 +51,7 @@ class Weather(Base):
     id = Column(Integer, primary_key=True)
     min_temp = Column(Numeric(3, 1))
     max_temp = Column(Numeric(3, 1))
+    mean_temp = Column(Numeric(3, 1))
     city_id = Column(Integer, ForeignKey("city.id"), nullable=False)
     city = relationship(City)
     timestamp = Column(DateTime)

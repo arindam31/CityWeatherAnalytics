@@ -2,7 +2,7 @@ import csv
 import json
 
 from helper import connect_db
-from model import Continent, City, Country
+from model import Continent, City, Country, Weather
 
 
 def write_continent_to_db(line_to_write):
@@ -32,56 +32,7 @@ def write_country_to_db(line_to_write):
         sess.add(country)
         sess.commit()
 
-
-sess = connect_db('../../locations')
-
-def main():
-    #
-    # with open('../../CC.json') as job:
-    #     data = json.load(job)
-    #     for line in data:
-    #         write_continent_to_db(line)
-
-    # with open('../../cities_all.json') as job:
-    #     data = json.load(job)
-    #     for line in data:
-    #         print(line)
-    # to_save = []
-    # cnt_added = 0
-    # city_add = 0
-    # with open('../../finale.json') as ffop:
-    #     data = json.load(ffop)
-    #     for line in data:
-    #         if 'continent_code' in line.keys():
-    #             if not sess.query(Country).filter_by(country_code=line['country_code']).all():
-    #                 continent = sess.query(Continent).filter_by(continent_code=line['continent_code']).all()[0]
-    #                 continent_id = continent.id
-    #                 country = Country(
-    #                     name=line['country_full'],
-    #                     country_code=line['country_code'],
-    #                     continent_id=continent_id)
-    #                 sess.add(country)
-    #                 sess.commit()
-    #                 print('Added a country:', line['country_full'])
-    #                 cnt_added += 1
-    #                 print (cnt_added)
-    #
-    #             else:
-    #                 country = sess.query(Country).filter_by(country_code=line['country_code']).all()[0]
-    #                 city = City(name=line['city_name'],
-    #                             city_id=line['city_id'],
-    #                             country_id=country.id,
-    #                             lat=line['lat'],
-    #                             lon=line['lon']
-    #                             )
-    #                 city_add += 1
-    #                 to_save.append(city)
-    #                 print('Added a city:', line['city_name'])
-    #                 print(city_add)
-    #
-    # sess.bulk_save_objects(to_save)
-    # sess.commit()
-
+def write_altitude_of_city():
     to_update = []
     count_not_found = 0
     count_found = 0
@@ -104,3 +55,69 @@ def main():
     sess.bulk_save_objects(to_update)
     sess.commit()
     print ('Done !!!!')
+
+def create_missing_country_city():
+
+
+    to_save = []
+    cnt_added = 0
+    city_add = 0
+    with open('../../data/json/finale.json') as ffop:
+        data = json.load(ffop)
+        for line in data:
+            if 'continent_code' in line.keys():
+                if not sess.query(Country).filter_by(country_code=line['country_code']).all():
+                    continent = sess.query(Continent).filter_by(continent_code=line['continent_code']).all()[0]
+                    continent_id = continent.id
+                    country = Country(
+                        name=line['country_full'],
+                        country_code=line['country_code'],
+                        continent_id=continent_id)
+                    sess.add(country)
+                    sess.commit()
+                    print('Added a country:', line['country_full'])
+                    cnt_added += 1
+                    print (cnt_added)
+
+                else:
+                    country = sess.query(Country).filter_by(country_code=line['country_code']).all()[0]
+                    city = City(name=line['city_name'],
+                                city_id=line['city_id'],
+                                country_id=country.id,
+                                lat=line['lat'],
+                                lon=line['lon']
+                                )
+                    city_add += 1
+                    to_save.append(city)
+                    print('Added a city:', line['city_name'])
+                    print(city_add)
+
+    sess.bulk_save_objects(to_save)
+    sess.commit()
+
+
+
+def calculate_write_mean_temp_to_weather(sess):
+    # Read min_temp and max_temp of each entry in Weather
+    to_update_mean = []
+    all_weather_rows = sess.query(Weather).all()
+    for row in all_weather_rows:
+        min_temp = row.min_temp
+        max_temp = row.max_temp
+
+        # Calculate Mean
+        mean = (min_temp + max_temp) / 2
+        row.mean_temp = mean
+        to_update_mean.append(row)
+
+    # Write to column 'mean_temp' in table Weather
+    sess.bulk_save_objects(to_update_mean)
+    sess.commit()
+
+def main():
+    sess = connect_db('../../locations')
+
+
+if __name__ == '__main__':
+    main()
+
