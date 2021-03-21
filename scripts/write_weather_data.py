@@ -70,6 +70,7 @@ def main(session):
     session.commit()
 
 
+
 if __name__ == '__main__':
     sess = create_session()
     main(session=sess)
