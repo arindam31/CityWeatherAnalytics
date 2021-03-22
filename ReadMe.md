@@ -7,11 +7,11 @@
 
 ## Running project locally
 
-- (In terminal)
+- (In terminal, from project directory)
   
   `jupyter notebook`
 
-- Double click "Geo.ipynb"
+- Click "Geo.ipynb"
 
 ## Viewing the map directly.
 
