@@ -41,7 +41,7 @@ def main(session):
 
         # For D days, create payload. For free account, only 1 day can be requested in 1 request.
         D = 15
-        start_date = '2021-01-01'
+        start_date = '2021-01-16'
 
         # Loop for D days
         for _ in range(D):
@@ -68,7 +68,6 @@ def main(session):
 
     session.bulk_save_objects(to_write)
     session.commit()
-
 
 
 if __name__ == '__main__':
