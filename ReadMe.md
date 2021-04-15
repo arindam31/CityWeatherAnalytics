@@ -2,7 +2,7 @@
 
 **Please create a venv using requirements.txt**:
 - python -m venv venv
-- pip install -r requirements.py
+- pip install -r requirements.txt
 - source venv/bin/activate
 
 ## Running project locally
